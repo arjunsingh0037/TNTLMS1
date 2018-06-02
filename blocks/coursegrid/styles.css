@@ -1,0 +1,47 @@
+.block_coursegrid .content {padding:10px;}
+.block_coursegrid .editbutton {text-align:right;}
+.block_coursegrid .coursegrid {
+/*  background: #ddeafa !important;
+   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.05); 
+    border: 1px solid #e7e7e7;
+  padding: 3px 10px; */
+    background: #f6f9fa;
+  border-radius: 5px;
+    border: 1px solid #EEE;
+    margin: 4px;
+}
+
+.block_coursegrid .coursename {
+  font-size: 17px;
+  border-bottom: 1px solid #333;
+  padding: 4px;
+  font-weight: bold;
+  /* background-color: #ddeafa; */
+  text-align: center;
+}
+
+.block_coursegrid .coursename a{
+  color: blue;
+}
+
+.block_coursegrid .summarygrid {
+    max-height: 179px;
+    overflow: hidden;
+	padding: 4px;
+}
+
+.block_coursegrid .coursegrid {
+    border: 1px solid #EEE;
+    box-shadow: 0 0 2px #ddd;
+    -webkit-transition: all 0.2s ease-in-out 0s;
+    -moz-transition: all 0.2s ease-in-out 0s;
+    -o-transition: all 0.2s ease-in-out 0s;
+    -ms-transition: all 0.2s ease-in-out 0s;
+    transition: all 0.2s ease-in-out 0s;
+}
+.block_coursegrid .coursegrid:hover {
+    border-color: #64bc62;
+    box-shadow: 0 0 2px transparent;
+}
