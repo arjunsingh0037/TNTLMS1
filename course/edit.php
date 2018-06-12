@@ -84,7 +84,6 @@ if ($id) {
         // Don't allow editing of  'site course' using this from.
         print_error('cannoteditsiteform');
     }
-
     // Login to the course and retrieve also all fields defined by course format.
     $course = get_course($id);
     require_login($course);
@@ -93,65 +92,47 @@ if ($id) {
     $category = $DB->get_record('course_categories', array('id'=>$course->category), '*', MUST_EXIST);
     $coursecontext = context_course::instance($course->id);
     require_capability('moodle/course:update', $coursecontext);
-
+    //By Arjun -Permission Access
+    $currentuser = $USER->id;
+    $user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+    if (!$user) {
+        echo $OUTPUT->header();
+        redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+        die; 
+    }
 } else if ($categoryid) {
     $course = null;
     require_login();
     $catid = '';
     $user_cats = array();
     $ac_categories = array();
-    // if(user_has_role_assignment($USER->id, 10, SYSCONTEXTID)){
-    //     $has_partner = $DB->get_record('trainingpartners',array('userid'=>$USER->id),'createdby');
-    //     if($DB->record_exists('trainingpartners', array('userid' => $USER->id))) {
-    //         $has_partner = $DB->get_record('trainingpartners',array('userid'=>$USER->id),'createdby');
-    //         $has_account = $DB->get_record('partners',array('userid'=>$has_partner->createdby),'createdby');
-    //         //$ac_categories= $DB->get_records('course_categories', array('idnumber'=>$has_account->createdby),'id');
-    //         $cats = $DB->get_records('course_categories');
-    //         foreach ($cats as $key => $value) {
-    //             if($value->idnumber != NULL){
-    //                 $user_cats = explode('-',$value->idnumber);
-    //                 if($user_cats[1] == $has_account->createdby){
-    //                      $ac_categories [] = $value->id;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     foreach ($ac_categories as $key => $value) {
-    //         $catid = $value->id;
-    //     }
-    //     if($ac_categories){
-    //         $category = $DB->get_record('course_categories', array('id'=>$catid), '*', MUST_EXIST);
-    //         $catcontext = context_coursecat::instance($category->id);
-    //         require_capability('moodle/course:create', $catcontext);
-    //         $PAGE->set_context($catcontext);  
-    //     }else{
-    //         echo 'No category has been created by manager';
-    //     }  
-
-    // }else{
-    //     print_error('needcoursecategroyid');
-    // } 
     $category = $DB->get_record('course_categories', array('id'=>$_POST['category']), '*', MUST_EXIST);
     $catcontext = context_coursecat::instance($category->id);
     require_capability('moodle/course:create', $catcontext);
-    $PAGE->set_context($catcontext);  
-
+    $PAGE->set_context($catcontext); 
+    //By Arjun -Permission Access
+    $currentuser = $USER->id;
+    $user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+    if (!$user) {
+        echo $OUTPUT->header();
+        redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+        die; 
+    } 
 } else {
-    // Creating new course in this category.
-    // $course = null;
-    // require_login();
-    // $category = $DB->get_record('course_categories', array('id'=>$categoryid), '*', MUST_EXIST);
-    // $catcontext = context_coursecat::instance($category->id);
-    // require_capability('moodle/course:create', $catcontext);
-    // $PAGE->set_context($catcontext);
     $course = null;
     require_login();
     $catcontext = context_system::instance();
     require_capability('moodle/course:create', $catcontext);
     $PAGE->set_context($catcontext);
-    //print_error('needcoursecategroyid');
+    //By Arjun -Permission Access
+    $currentuser = $USER->id;
+    $user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+    if (!$user) {
+        echo $OUTPUT->header();
+        redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+        die; 
+    }
 }
-
 // Prepare course and the editor.
 $editoroptions = array('maxfiles' => EDITOR_UNLIMITED_FILES, 'maxbytes'=>$CFG->maxbytes, 'trusttext'=>false, 'noclean'=>true);
 $overviewfilesoptions = course_overviewfiles_options($course);

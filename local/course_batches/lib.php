@@ -285,8 +285,14 @@ function user_coursebatch_enrolment($userid, array $batches, array $courses){
         $users = $DB->get_records('batch_enrolstudent',array('batchid'=>$batch),'userid');
         foreach ($users as $user) {
             foreach ($courses as $course) {
-                $check_enrolment = check_enrolment($course, $user->userid, $roleid,'manual');
-                $flag = 1;
+                $enrol = $DB->get_record('enrol',array('courseid'=>$course,'enrol'=>'manual'),'id');
+                if($DB->record_exists('user_enrolments',array('enrolid'=>$enrol->id,'userid'=>$user->userid,'status'=>1))){
+                    $check_enrolment = update_enrolment($userid, $enrol->id, $user->userid,0);
+                }else{
+                    $check_enrolment = check_enrolment($course, $user->userid, $roleid,'manual'); 
+                } 
+                //print_object($check_enrolment);
+                $flag = 1;          
             }
         } 
     }
@@ -297,6 +303,21 @@ function user_coursebatch_enrolment($userid, array $batches, array $courses){
     }
 }
 
+function professor_coursebatch_enrolment($profid, array $courses){
+    global $CFG,$DB;
+    $flag = 0;
+    $roleid = $DB->get_field('role', 'id', array('shortname' =>'professor'));
+    
+    foreach ($courses as $course) {
+        $check_enrolment = check_enrolment($course, $profid, $roleid,'manual');
+        $flag = 1; 
+    }
+    if($flag == 1){
+        return true;
+    }else{
+        return false;
+    }
+}
 function check_enrolment($courseid, $userid, $roleid, $enrolmethod = 'manual') {
     global $DB;
     $user = $DB->get_record('user', array('id' => $userid, 'deleted' => 0), '*', MUST_EXIST);
@@ -326,8 +347,80 @@ function check_enrolment($courseid, $userid, $roleid, $enrolmethod = 'manual') {
     }
     return true;
 }
+function professor_assigned_acadcourses(){
+    global $CFG,$DB,$USER,$OUTPUT;
+    $i = 1;
+    $content = '';
+    $content .= '<table id="example1" class="table table-striped table-bordered datatable" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Professor</th>
+                            <th>Batch Name</th>
+                            <th>Batch Code</th>
+                            <th>Course</th>
+                        </tr>
+                    </thead>';
+    $content .= '<tbody>';
+    if($DB->record_exists('course_professors',array('createdby'=>$USER->id))){
+        $batches_assigned = $DB->get_records('course_professors',array('createdby'=>$USER->id),'id,batchid,courseid,userid');
+        foreach ($batches_assigned as $btf) {
+            $content .= '<tr>';
+            $batch = $DB->get_record('batches',array('id'=>$btf->batchid),'batchname,batchcode');
+            $user = $DB->get_record('user',array('id'=>$btf->userid),'id,firstname');
+            $course = $DB->get_record('course',array('id'=>$btf->courseid),'id,fullname');
+            $content .= '<td>'.$i.'</td>
+                        <td>'.$user->firstname.'</td>
+                        <td>'.$batch->batchname.'</td>
+                        <td>'.$batch->batchcode.'</td>
+                        <td>'.$course->fullname.'</td>';
+            $content .='</tr>';
+            $i++;
+        }  
+    }else{
+        echo '<div id="batchsuccess">';
+        echo $OUTPUT->notification('No courses assigned to professors','notifysuccess');
+        echo '</div>';
+    }                    
+    $content .= '</tbody></table>';
+    return $content;
+}
 
-
+function user_update_enrollment($tpid,$batchid,$courseid){
+    global $CFG,$DB;
+    $flag = 0;
+    $roleid = $DB->get_field('role', 'id', array('shortname' =>'student'));
+    $enrol = $DB->get_record('enrol',array('courseid'=>$courseid,'enrol'=>'manual'),'id');
+    $users = $DB->get_records('batch_enrolstudent',array('batchid'=>$batchid),'userid');
+    foreach ($users as $user) {
+        $check_status = update_enrolment($tpid, $enrol->id, $user->userid, 1);
+        if($check_status){
+            $flag = 1;
+        }
+    }
+    if($flag == 0){
+         return false;
+    }else{
+         return true;
+    }
+}
+function update_enrolment($tpid, $enrolid, $userid, $status){
+    global $DB,$USER,$CFG;
+    $ue = $DB->get_record('user_enrolments',array('enrolid'=>$enrolid,'userid'=>$userid),'id'); 
+    $update = new stdClass();
+    $update->id = $ue->id;
+    $update->status = $status;
+    $update->enrolid = $enrolid;
+    $update->userid = $userid;
+    $update->timestart = time();
+    $update->modifierid = $tpid;
+    $updated = $DB->update_record('user_enrolments',$update);  
+    if($updated){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 
 

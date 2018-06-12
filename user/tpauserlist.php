@@ -56,17 +56,15 @@ if (!empty($CFG->forceloginforprofiles)) {
 } else if (!empty($CFG->forcelogin)) {
     require_login();
 }*/
-
-$userid = $USER->id;       // Owner of the page.
-
+//By Arjun -Permission Access
+$userid = $USER->id;       
 if ($user = $DB->record_exists('partners', array('createdby' => $userid)) || $user = $DB->record_exists('trainingpartners', array('createdby' => $userid)) || $user = $DB->record_exists('trainingpartners', array('userid' => $userid))) {
     
 }else {
     $PAGE->set_context(context_system::instance());
     echo $OUTPUT->header();
-    echo $OUTPUT->notification(get_string('invaliduser', 'error'));
-    echo $OUTPUT->footer();
-    die;
+    redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+    die; 
 }
 $currentuser = $USER->id;
 $context = $usercontext = context_user::instance($userid, MUST_EXIST);

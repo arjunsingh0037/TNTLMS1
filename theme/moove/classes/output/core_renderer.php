@@ -866,7 +866,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                                     <li><a href="'.$CFG->wwwroot.'/local/course_batches/batch.php">&#128902;  Create Batch</a></li>
                                     <li><a href="'.$CFG->wwwroot.'/local/course_batches/batch_enrolment.php">&#128902;  Add Students To Batch</a></li>
                                     <li><a href="'.$CFG->wwwroot.'/local/course_batches/batchlist.php">&#128902;  Batch List</a></li>
-                                    <li><a href="#">&#128902;  Migrate Batch</a></li>
+                                    <li><a href="'.$CFG->wwwroot.'/local/course_batches/migrate.php">&#128902;  Migrate Batch</a></li>
                                 </ul>
                             </div>';
         }
@@ -877,7 +877,7 @@ class core_renderer extends \theme_boost\output\core_renderer {
                                     <li><a href="'.$CFG->wwwroot.'/course/edit.php">&#128902;  Create Course</a></li>
                                     <li><a href="'.$CFG->wwwroot.'/course/courselist.php">&#128902;  Course List</a></li>
                                     <li><a href="'.$CFG->wwwroot.'/local/course_batches/batch_to_course.php">&#128902;  Assign Course To Batch</a></li>
-                                    <li><a href="#">&#128902;  Assign Course To Professor</a></li>
+                                    <li><a href="'.$CFG->wwwroot.'/local/course_batches/course_to_professor.php">&#128902;  Assign Course To Professor</a></li>
                                 </ul>
                             </div>';
         }   
@@ -920,151 +920,204 @@ class core_renderer extends \theme_boost\output\core_renderer {
     }
     public function professor_menu(){
         global $DB,$CFG,$OUTPUT,$PAGE,$USER;
-        $creator = $DB->get_record('trainingpartners',array('userid'=>$USER->id),'createdby');
-        $arr = $DB->get_record('partners',array('userid'=>$creator->createdby),'tp_permission');
-        $tpa_permission = explode(',',$arr->tp_permission);
-        $sidebar_training_partner = '';
-        if($tpa_permission[0] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-users"></i><span class="text">User Management</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="#">&#128902;  User List</a></li>
-                                    <li><a href="'.$CFG->wwwroot.'/admin/tool/uploaduser/index.php">&#128902;  User Bulk Upload</a></li>
-                                </ul>
-                            </div>';
+        $sidebar_professors = '';
+        if($DB->record_exists('tp_useruploads',array('userid'=>$USER->id))){
+            $creator_tp = $DB->get_record('tp_useruploads',array('userid'=>$USER->id),'creatorid');
         }
-        if($tpa_permission[1] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-btc"></i><span class="text">Batch Management</span></button>
+        $creator_pa = $DB->get_record('trainingpartners',array('userid'=>$creator_tp->creatorid  ),'createdby');
+        $arr = $DB->get_record('partners',array('userid'=>$creator_pa->createdby),'prof_permission');
+        $prof_permission = explode(',',$arr->prof_permission);
+        
+        if($prof_permission[0] == 1){
+            $sidebar_professors .='<button class="accordion"><i class="fa fa-search-plus"></i><span class="text">Batch Management</span></button>
                             <div class="panel">
                                 <ul>
-                                    <li><a href="'.$CFG->wwwroot.'/local/course_batches/batch.php">&#128902;  Create Batch</a></li>
-                                    <li><a href="#">&#128902;  Add Students To Batch</a></li>
                                     <li><a href="#">&#128902;  Batch List</a></li>
-                                    <li><a href="#">&#128902;  Migrate Batch</a></li>
+                                    <li><a href="#">&#128902;  Record Attendance</a></li>
                                 </ul>
                             </div>';
         }
-        if($tpa_permission[2] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-book"></i><span class="text">Course Management</span></button>
+        if($prof_permission[1] == 1){
+            $sidebar_professors .='<li>
+                                    <a class="" href="'.$CFG->wwwroot.'/my/courses.php">
+                                        <i class="fa fa-book"></i>
+                                        <span class="text">My Courses</span>
+                                    </a>
+                                </li>';
+        }
+        if($prof_permission[2] == 1){
+            $sidebar_professors .='<button class="accordion"><i class="fa fa-laptop"></i><span class="text">My eLabs</span></button>
                             <div class="panel">
                                 <ul>
-                                    <li><a href="'.$CFG->wwwroot.'/course/edit.php">&#128902;  Create Course</a></li>
-                                    <li><a href="'.$CFG->wwwroot.'/course/courselist.php">&#128902;  Course List</a></li>
-                                    <li><a href="#">&#128902;  Assign Course To Batch</a></li>
-                                    <li><a href="#">&#128902;  Assign Course To Professor</a></li>
+                                    <li><a href="#">&#128902;  Add Labs</a></li>
+                                    <li><a href="#">&#128902;  Assign Labs</a></li>
+                                    <li><a href="#">&#128902;  List of Labs</a></li>
+                                    <li><a href="#">&#128902;  Evaluate Labs</a></li>
                                 </ul>
                             </div>';
-        }   
-        if($tpa_permission[3] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-code-fork"></i><span class="text">Project Management</span></button>
+        }
+        if($prof_permission[3] == 1){
+            $sidebar_professors .='<button class="accordion"><i class="fa fa-code-fork"></i><span class="text">Project Management</span></button>
                             <div class="panel">
                                 <ul>
-                                    <li><a href="#">&#128902;  Manage Component</a></li>
-                                    <li><a href="#">&#128902;  Manage Project</a></li>
+                                    <li><a href="#">&#128902;  My Projects</a></li>
+                                    <li><a href="#">&#128902;  Manage Group</a></li>
+                                    <li><a href="#">&#128902;  Assign Group</a></li>
+                                    <li><a href="#">&#128902;  Search Projects</a></li>
+                                    <li><a href="#">&#128902;  Access Peers</a></li>
                                 </ul>
                             </div>';
         }
-        if($tpa_permission[4] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-tasks"></i><span class="text">Task Management</span></button>
+        if($prof_permission[4] == 1){
+            $sidebar_professors .='<li>
+                                    <a class="" href="'.$CFG->wwwroot.'/my">
+                                        <i class="fa fa-pencil-square-o"></i>
+                                        <span class="text">My Assessments</span>
+                                    </a>
+                                </li>';
+        }
+        if($prof_permission[5] == 1){
+            $sidebar_professors .='<button class="accordion"><i class="fa fa-tasks"></i><span class="text">Task Management</span></button>
                             <div class="panel">
                                 <ul>
-                                    <li><a href="#">&#128902;  Manage Task</a></li>
-                                    <li><a href="#">&#128902;  Task List</a></li>
-                                    <li><a href="#">&#128902;  BulkUpload Task</a></li>
-                                    <li><a href="#">&#128902;  BulkAssign Task</a></li>
+                                    <li><a href="#">&#128902;  List of Tasks</a></li>
+                                    <li><a href="#">&#128902;  Evaluate Tasks</a></li>
                                 </ul>
                             </div>';
         }
-        if($tpa_permission[5] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-database"></i><span class="text">Reports & Views</span></button>
+        if($prof_permission[6] == 1){
+            $sidebar_professors .='<button class="accordion"><i class="fa fa-comments-o"></i><span class="text">Video Conferences</span></button>
                             <div class="panel">
                                 <ul>
-                                    <li><a href="#">&#128902;  Academic Reports</a></li>
-                                    <li><a href="#">&#128902;  Academic Progress Reports</a></li>
-                                    <li><a href="#">&#128902;  Non-Academic Reports</a></li>
-                                    <li><a href="#">&#128902;  Non-Academic Progress Reports</a></li>
-                                    <li><a href="#">&#128902;  Usage Reports</a></li>
+                                    <li><a href="#">&#128902;  iKonnect</a></li>
+                                    <li><a href="#">&#128902;  Zoom</a></li>
                                 </ul>
                             </div>';
         }
-        if($tpa_permission[6] == 1){
-            $sidebar_training_partner .='';
+        if($prof_permission[7] == 1){
+            $sidebar_professors .='<button class="accordion"><i class="fa fa-database"></i><span class="text">Reports</span></button>
+                            <div class="panel">
+                                <ul>
+                                    <li><a href="#">&#128902;  Consolidated Report</a></li>
+                                    <li><a href="#">&#128902;  Attendance Report</a></li>
+                                    <li><a href="#">&#128902;  Prescribed Course Reports</a></li>
+                                </ul>
+                            </div>';
         }
-        return $sidebar_training_partner;    
+        
+        
+        return $sidebar_professors;    
     }
     public function student_menu(){
         global $DB,$CFG,$OUTPUT,$PAGE,$USER;
-        $creator = $DB->get_record('trainingpartners',array('userid'=>$USER->id),'createdby');
-        $arr = $DB->get_record('partners',array('userid'=>$creator->createdby),'tp_permission');
-        $tpa_permission = explode(',',$arr->tp_permission);
-        $sidebar_training_partner = '';
-        if($tpa_permission[0] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-users"></i><span class="text">User Management</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="#">&#128902;  User List</a></li>
-                                    <li><a href="'.$CFG->wwwroot.'/admin/tool/uploaduser/index.php">&#128902;  User Bulk Upload</a></li>
-                                </ul>
-                            </div>';
+        $sidebar_students = '';
+        $stud_permission = '';
+        if($DB->record_exists('tp_useruploads',array('userid'=>$USER->id))){
+            $creator_tp = $DB->get_record('tp_useruploads',array('userid'=>$USER->id),'creatorid');
+            $creator_pa = $DB->get_record('trainingpartners',array('userid'=>$creator_tp->creatorid  ),'createdby');
+            $arr = $DB->get_record('partners',array('userid'=>$creator_pa->createdby),'stud_permission');
+            $stud_permission = explode(',',$arr->stud_permission);
+        
+            if($stud_permission[9] == 1){
+                $sidebar_students ='<li>
+                                    <a class="" href="'.$CFG->wwwroot.'/my/account.php">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        <span class="text">My Account</span>
+                                    </a>
+                                </li>';
+            }
+            if($stud_permission[0] == 1){
+                $sidebar_students .='<li>
+                                        <a class="" href="'.$CFG->wwwroot.'/my/courses.php">
+                                            <i class="fa fa-book"></i>
+                                            <span class="text">My Courses</span>
+                                        </a>
+                                    </li>';
+            }
+            if($stud_permission[1] == 1){
+                $sidebar_students .='<button class="accordion"><i class="fa fa-laptop"></i><span class="text">My eLabs</span></button>
+                                <div class="panel">
+                                    <ul>
+                                        <li><a href="#">&#128902;  My Labs</a></li>
+                                        <li><a href="#">&#128902;  My lab feedbacks</a></li>
+                                        <li><a href="#">&#128902;  My lab reports Group</a></li>
+                                    </ul>
+                                </div>';
+            }
+            if($stud_permission[2] == 1){
+                $sidebar_students .='<button class="accordion"><i class="fa fa-code-fork"></i><span class="text">My eProjects</span></button>
+                                <div class="panel">
+                                    <ul>
+                                        <li><a href="#">&#128902;  My Projects</a></li>
+                                        <li><a href="#">&#128902;  Manage Group</a></li>
+                                        <li><a href="#">&#128902;  Assign Group</a></li>
+                                        <li><a href="#">&#128902;  Search Projects</a></li>
+                                        <li><a href="#">&#128902;  Access Peers</a></li>
+                                    </ul>
+                                </div>';
+            }
+            if($stud_permission[3] == 1){
+                $sidebar_students .='<li>
+                                        <a class="" href="'.$CFG->wwwroot.'/my">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                            <span class="text">My Assessments</span>
+                                        </a>
+                                    </li>';
+            }
+            if($stud_permission[4] == 1){
+                $sidebar_students .='<li>
+                                        <a class="" href="'.$CFG->wwwroot.'/my">
+                                            <i class="fa fa-tasks"></i>
+                                            <span class="text">My Tasks</span>
+                                        </a>
+                                    </li>';
+            }
+            if($stud_permission[8] == 1){
+                $sidebar_students .='<button class="accordion"><i class="fa fa-street-view"></i><span class="text">My Mentors</span></button>
+                                <div class="panel">
+                                    <ul>
+                                        <li><a href="#">&#128902;  Search Mentors</a></li>
+                                        <li><a href="#">&#128902;  View Schedules</a></li>
+                                        <li><a href="#">&#128902;  Mentoring Feedback</a></li>
+                                    </ul>
+                                </div>';
+            }
+            if($stud_permission[7] == 1){
+                $sidebar_students .='<button class="accordion"><i class="fa fa-comments-o"></i><span class="text">Video Conferences</span></button>
+                                <div class="panel">
+                                    <ul>
+                                        <li><a href="#">&#128902;  iKonnect</a></li>
+                                        <li><a href="#">&#128902;  Zoom</a></li>
+                                    </ul>
+                                </div>';
+            }
+            if($stud_permission[6] == 1){
+                $sidebar_students .='<li>
+                                        <a class="" href="'.$CFG->wwwroot.'/my">
+                                            <i class="fa fa-mortar-board"></i>
+                                            <span class="text">Resume Analyzer</span>
+                                        </a>
+                                    </li>';
+            }
+            if($stud_permission[5] == 1){
+                $sidebar_students .='<button class="accordion"><i class="fa fa-search-plus"></i><span class="text">Job Bridge</span></button>
+                                <div class="panel">
+                                    <ul>
+                                        <li><a href="#">&#128902;  Apply for Jobs</a></li>
+                                        <li><a href="#">&#128902;  Apply for Internships</a></li>
+                                        <li><a href="#">&#128902;  Career Guidance</a></li>
+                                        <li><a href="#">&#128902;  Resume Building</a></li>
+                                    </ul>
+                                </div>';
+            }
         }
-        if($tpa_permission[1] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-btc"></i><span class="text">Batch Management</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="'.$CFG->wwwroot.'/local/course_batches/batch.php">&#128902;  Create Batch</a></li>
-                                    <li><a href="#">&#128902;  Add Students To Batch</a></li>
-                                    <li><a href="#">&#128902;  Batch List</a></li>
-                                    <li><a href="#">&#128902;  Migrate Batch</a></li>
-                                </ul>
-                            </div>';
-        }
-        if($tpa_permission[2] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-book"></i><span class="text">Course Management</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="'.$CFG->wwwroot.'/course/edit.php">&#128902;  Create Course</a></li>
-                                    <li><a href="'.$CFG->wwwroot.'/course/courselist.php">&#128902;  Course List</a></li>
-                                    <li><a href="#">&#128902;  Assign Course To Batch</a></li>
-                                    <li><a href="#">&#128902;  Assign Course To Professor</a></li>
-                                </ul>
-                            </div>';
-        }   
-        if($tpa_permission[3] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-code-fork"></i><span class="text">Project Management</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="#">&#128902;  Manage Component</a></li>
-                                    <li><a href="#">&#128902;  Manage Project</a></li>
-                                </ul>
-                            </div>';
-        }
-        if($tpa_permission[4] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-tasks"></i><span class="text">Task Management</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="#">&#128902;  Manage Task</a></li>
-                                    <li><a href="#">&#128902;  Task List</a></li>
-                                    <li><a href="#">&#128902;  BulkUpload Task</a></li>
-                                    <li><a href="#">&#128902;  BulkAssign Task</a></li>
-                                </ul>
-                            </div>';
-        }
-        if($tpa_permission[5] == 1){
-            $sidebar_training_partner .='<button class="accordion"><i class="fa fa-database"></i><span class="text">Reports & Views</span></button>
-                            <div class="panel">
-                                <ul>
-                                    <li><a href="#">&#128902;  Academic Reports</a></li>
-                                    <li><a href="#">&#128902;  Academic Progress Reports</a></li>
-                                    <li><a href="#">&#128902;  Non-Academic Reports</a></li>
-                                    <li><a href="#">&#128902;  Non-Academic Progress Reports</a></li>
-                                    <li><a href="#">&#128902;  Usage Reports</a></li>
-                                </ul>
-                            </div>';
-        }
-        if($tpa_permission[6] == 1){
-            $sidebar_training_partner .='';
-        }
-        return $sidebar_training_partner;    
+        $sidebar_students .='<li>
+                                <a class="" href="'.$CFG->wwwroot.'/my">
+                                    <i class="fa fa-university"></i>
+                                    <span class="text">Higher Studies</span>
+                                </a>
+                            </li>';
+        return $sidebar_students;    
     }
     public function itrack_usermenu(){
         global $USER,$DB,$CFG;

@@ -213,6 +213,146 @@ function my_reset_page_for_all_users($private = MY_PAGE_PRIVATE, $pagetype = 'my
     $event->trigger();
 }
 
+//function to show student account
+
+//function to sho user's enrolled  courses
+function student_courselist($userid,$creatorid,$roleid){
+    global $OUTPUT,$CFG,$DB,$PAGE;
+    $count = 0;$flag = 0; 
+    $content = '';
+    $msg = '';
+    $content.='<div id="exTab2" class=""> 
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a  href="#1" data-toggle="tab">ACADEMIC COURSES</a>
+                        </li>
+                        <li>
+                            <a href="#2" data-toggle="tab">SUBSCRIBED INDUSTRY COURSES</a>
+                        </li>
+                        <li>
+                            <a href="#3" data-toggle="tab">INDUSTRY PARTNER COURSES</a>
+                        </li>
+                    </ul>';
+    $courses = enrol_get_users_courses($userid,true);
+    if($courses){
+        //print_object($courses);
+        $content .='<div class="tab-content ">
+                <div class="tab-pane active" id="1">';
+                 $content .= '<table id="example1" class="table table-striped table-bordered datatable" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Course Category</th>
+                        <th>Action</th>
+                    </tr>
+                </thead><tbody>';
+                foreach ($courses as $course) {
+                    if($DB->record_exists('course_type',array('creatorid'=>$creatorid,'courseid'=>$course->id,'subscribed'=>0))){
+                        $academic_courses = $DB->get_records('course_type',array('creatorid'=>$creatorid,'courseid'=>$course->id,'subscribed'=>0));;
+                        $content .=usercourselist($roleid,$academic_courses,1);
+                    }else{
+                        $flag = 1;
+                    }
+                }
+                $content .= '</tbody></table>';
+                if($flag == 1){
+                    $content .= '<p class="nocourse">You do not  have any academic courses</p>'; 
+                }
+                $content .='</div>
+                <div class="tab-pane" id="2">';
+                $content .= '<table id="example1" class="table table-striped table-bordered datatable" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Course Category</th>
+                        <th>Valid Upto</th>
+                        <th>Action</th>
+                    </tr>
+                </thead><tbody>';
+                foreach ($courses as $cid => $course) {
+                    if($DB->record_exists('course_type',array('creatorid'=>$creatorid,'courseid'=>$course->id,'subscribed'=>1))){
+                        $subscibed_courses = $DB->get_records('course_type',array('creatorid'=>$creatorid,'courseid'=>$course->id,'subscribed'=>1));;
+                        $content .=usercourselist($roleid,$subscibed_courses,2);
+                    }else{
+                        $flag = 2;
+                    }
+                }
+                $content .= '</tbody></table>';
+                if($flag == 2){
+                    $content .= '<p class="nocourse">You do not  have any subscribed industry courses</p>'; 
+                }
+                $content .= '</div><div class="tab-pane" id="3">';
+                $content .= '<table id="example1" class="table table-striped table-bordered datatable" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>Course Category</th>
+                        <th>Valid Upto</th>
+                        <th>Action</th>
+                    </tr>
+                </thead><tbody>';
+                foreach ($courses as $cid => $course) {
+                    if($DB->record_exists('course_type',array('creatorid'=>$creatorid,'courseid'=>$course->id,'subscribed'=>2))){
+                        $industry_courses = $DB->get_records('course_type',array('creatorid'=>$creatorid,'courseid'=>$course->id,'subscribed'=>2));;
+                        $content .=usercourselist($roleid,$industry_courses,2);
+                    }else{
+                        $flag = 3;
+                    }
+                }
+                
+                $content .= '</tbody></table>';
+                if($flag == 3){
+                    $content .= '<p class="nocourse">You do not  have any industry partner courses</p>'; 
+                }
+                $content .= '</div></div>';
+    }else{
+        $content .= 'You do not have any courses'; 
+    }
+    $content .= '</div>';
+    //print_object($categories2);die();
+    echo $content;
+}
+
+function usercourselist($role,array $courses, $coursetype){
+    global $CFG,$DB,$USER;
+    $crslist = '';
+    $i = 1;
+    foreach ($courses as $course) {
+        $crs = $DB->get_record('course',array('id'=>$course->courseid),'id,shortname,fullname,category');
+        $crs_cat = $DB->get_record('course_categories',array('id'=>$crs->category),'id,name');
+        $viewcourse = html_writer::link(new moodle_url('/course/view.php',array('id' => $crs->id)),'Start Learning',array('class'=>'courselistlink'));
+        if($coursetype == 1){
+            $crslist .= '<tr>
+                            <td>'.$i.'</td>
+                            <td>'.$crs->shortname.'</td>
+                            <td>'.$crs->fullname.'</td>
+                            <td>'.$crs_cat->name.'</td>
+                            <td>'.$viewcourse.'</td>';
+            $crslist .='</tr>';
+        }else{
+            $enrolid = $DB->get_record('enrol',array('courseid'=>$course->courseid,'enrol'=>'manual'),'id');
+            $enrolment = $DB->get_record('user_enrolments',array('enrolid'=>$enrolid->id,'userid'=>$USER->id),'timeend');
+            $crslist .= '<tr>
+                            <td>'.$i.'</td>
+                            <td>'.$crs->shortname.'</td>
+                            <td>'.$crs->fullname.'</td>
+                            <td>'.$crs_cat->name.'</td>
+                            <td>'.$enrolment->timeend.'</td>
+                            <td>'.$viewcourse.'</td>';
+            $crslist .='</tr>';
+        }
+        $i++;
+    }  
+    return $crslist;                
+}
+
+
 class my_syspage_block_manager extends block_manager {
     // HACK WARNING!
     // TODO: figure out a better way to do this

@@ -33,18 +33,22 @@
 
     .small-box > .inner {
         padding: 10px;
+        text-align:left;
+        min-height: 18%;
     }
-
-    .small-box h3,
     .small-box p {
         z-index: 5;
         color: #fff;
+        font-size:17px;
+        width: 60%;
     }
 
     .small-box h3 {
         margin: 0 0 10px 0;
         white-space: nowrap;
         padding: 0;
+        z-index: 5;
+        color: #fff;
     }
 
     .small-box .icon {
@@ -52,10 +56,14 @@
         -o-transition: all .3s linear;
         transition: all .3s linear;
         position: absolute;
-        top: 0;
-        right: 40px;
+        top: 10;
+        right: 45px;
         z-index: 0;
         font-size: 48px;
         color: rgba(0, 0, 0, 0.15);
+    }
+    .small-box:hover .icon{
+        font-size: 75px;
+        right: 75px;
     }
 }

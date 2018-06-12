@@ -123,6 +123,18 @@ $templatecontext['logout'] = $CFG->wwwroot.'/login/logout.php?sesskey='.sesskey(
 $templatecontext['flatnavigation'] = $PAGE->flatnav;
 //require_once(dirname(__FILE__).'/includes/jslinks.php');
 //echo '<script type="text/javascript" src="'.$CFG->wwwroot.'/theme/moove/layout/scripts.js'.'"></script>';
-echo $OUTPUT->render_from_template('theme_moove/mydashboard', $templatecontext);
+if(is_siteadmin()){ //superadmin
+   echo $OUTPUT->render_from_template('theme_moove/mydashboard-admin', $templatecontext);
+}elseif(user_has_role_assignment($USER->id, 1, SYSCONTEXTID)) { //account manager
+    echo $OUTPUT->render_from_template('theme_moove/mydashboard-account', $templatecontext);
+}elseif(user_has_role_assignment($USER->id, 9, SYSCONTEXTID)) { //partner admin
+    echo $OUTPUT->render_from_template('theme_moove/mydashboard-partner', $templatecontext);
+}elseif(user_has_role_assignment($USER->id, 10, SYSCONTEXTID)) { //training partner
+    echo $OUTPUT->render_from_template('theme_moove/mydashboard-trainingpartner', $templatecontext);
+}elseif(user_has_role_assignment($USER->id, 3, SYSCONTEXTID)) { //professor 
+    echo $OUTPUT->render_from_template('theme_moove/mydashboard-professor', $templatecontext);
+}else{ //student
+    echo $OUTPUT->render_from_template('theme_moove/mydashboard-student', $templatecontext);
+}  
 require_once(dirname(__FILE__).'/jsincludes.php');
 ?>

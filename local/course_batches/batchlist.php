@@ -37,23 +37,17 @@ require_once('lib.php');
 
 $PAGE->set_url('/local/course_batches/batchlist.php');
 require_login();
-$userid = $USER->id;       // Owner of the page.
-$user = $DB->record_exists('trainingpartners', array('userid' => $userid));
-if ($user) {
-    $PAGE->set_context(context_system::instance());
-}else{
-    echo $OUTPUT->header();
-    echo $OUTPUT->notification(get_string('invaliduser', 'error'));
-    echo $OUTPUT->footer();
-    die;
-    
-}
 $currentuser = $USER->id;
-$context = $usercontext = context_user::instance($userid, MUST_EXIST);
+$context = context_user::instance($currentuser, MUST_EXIST);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('custom');
 $PAGE->set_pagetype('user-profile');
-
+$user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+if (!$user) {
+    echo $OUTPUT->header();
+    redirect($CFG->wwwroot.'/my','You do not have access to this page.',2,null,'error');
+    die; 
+}
 // Start setting up the page.
 $strpublicprofile = 'Batch Lists';
 

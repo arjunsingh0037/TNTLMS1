@@ -1526,10 +1526,10 @@ function add_partners($newuserdata) {
     $arr3 = array($newuserdata->jobmanageHC,$newuserdata->reportmanageHC,$newuserdata->feedbackHC);
     $hcaccess = implode(',',$arr3);
     //permission students
-    $arr4 = array($newuserdata->coursemanageSTU,$newuserdata->labsmanageSTU,$newuserdata->projectmanageSTU,$newuserdata->assessmanageSTU,$newuserdata->taskmanageSTU,$newuserdata->jobmanageSTU,$newuserdata->resumeSTU,$newuserdata->ikonnectmanageSTU,$newuserdata->mentormanageSTU,$newuserdata->accountmanageSTU,$newuserdata->feedbackSTU);
+    $arr4 = array($newuserdata->coursemanageSTU,$newuserdata->labsmanageSTU,$newuserdata->projectmanageSTU,$newuserdata->assessmanageSTU,$newuserdata->taskmanageSTU,$newuserdata->jobmanageSTU,$newuserdata->resumeSTU,$newuserdata->vcmanageSTU,$newuserdata->mentormanageSTU,$newuserdata->accountmanageSTU,$newuserdata->feedbackSTU);
     $studaccess = implode(',',$arr4);
     //permission professors
-    $arr5 = array($newuserdata->badgemanagePROF,$newuserdata->coursemanagePROF,$newuserdata->labsmanagePROF,$newuserdata->hackmanagePROF,$newuserdata->projectmanagePROF,$newuserdata->assessmanagePROF,$newuserdata->taskmanagePROF,$newuserdata->ikonnectmanagePROF,$newuserdata->reportmanagePROF,$newuserdata->feedbackPROF);
+    $arr5 = array($newuserdata->badgemanagePROF,$newuserdata->coursemanagePROF,$newuserdata->labsmanagePROF,$newuserdata->projectmanagePROF,$newuserdata->assessmanagePROF,$newuserdata->taskmanagePROF,$newuserdata->vcmanagePROF,$newuserdata->reportmanagePROF,$newuserdata->feedbackPROF);
     $profaccess = implode(',',$arr5);
     $new_partner->permission = $paaccess;
     $new_partner->tp_no = $newuserdata->nooftpa;

@@ -277,11 +277,10 @@ class user_editadvanced_form extends moodleform {
                     $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'assessmanageSTU', 'Assessment Management',null, array('group' => 4));
                     $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'taskmanageSTU', 'Task Management',null, array('group' => 4));
                     $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'jobmanageSTU', 'Job Management',null, array('group' => 4));
-                    $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'projectmanageSTU', 'Project Management',null, array('group' => 4));
                     $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'resumeSTU', 'Resume Analyzer',null, array('group' => 4));
-                    $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'ikonnectmanageSTU', 'iKonnect Management',null, array('group' => 4));
+                    $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'vcmanageSTU', 'Video Conferences',null, array('group' => 4));
                     $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'mentormanageSTU', 'Mentor Management',null, array('group' => 4));
-                    $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'accountmanageSTU', 'Project Management',null, array('group' => 4));
+                    $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'accountmanageSTU', 'Account Management',null, array('group' => 4));
                     $availablefromgroup22[] =& $mform->createElement('advcheckbox', 'feedbackSTU', 'Feedback',null, array('group' => 4));
                     $this->add_checkbox_controller(4,'Select All / None');
                     $mform->addGroup($availablefromgroup22, 'availablefromgroup22', 'Access Permissions for Students', ' ', false);   
@@ -306,11 +305,10 @@ class user_editadvanced_form extends moodleform {
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'badgemanagePROF', 'Badge Management',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'coursemanagePROF', 'Course Management',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'labsmanagePROF', 'Labs Management',null, array('group' => 5));
-                    $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'hackmanagePROF', 'Hackathon Labs Management',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'projectmanagePROF', 'Project Management',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'assessmanagePROF', 'Assessment Management',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'taskmanagePROF', 'Task Management',null, array('group' => 5));
-                    $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'ikonnectmanagePROF', 'iKonnect Management',null, array('group' => 5));
+                    $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'vcmanagePROF', 'Video Conferences',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'reportmanagePROF', 'Report Management',null, array('group' => 5));
                     $availablefromgroup32[] =& $mform->createElement('advcheckbox', 'feedbackPROF', 'Feedback',null, array('group' => 5));
                     $this->add_checkbox_controller(5,'Select All / None');
@@ -470,7 +468,7 @@ class user_editadvanced_form extends moodleform {
                 $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'taskmanageSTU', 'Task Management',null, array('group' => 5));
                 $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'jobmanageSTU', 'Job Management',null, array('group' => 5));
                 $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'resumeanalyzerSTU', 'Resume Analyzer',null, array('group' => 5));
-                $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'iKonnectmanageSTU', 'iKonnect Management',null, array('group' => 5));
+                $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'vcmanageSTU', 'Video Conferences',null, array('group' => 5));
                 $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'mentormanageSTU', 'Mentor Management',null, array('group' => 5));
                 $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'accountmanageSTU', 'Account Management',null, array('group' => 5));
                 $availablefromgroup5[] =& $mform->createElement('advcheckbox', 'feedbackSTU', 'Feedback',null, array('group' => 5));
@@ -500,7 +498,7 @@ class user_editadvanced_form extends moodleform {
                    $mform->setDefault('resumeanalyzerSTU', true); 
                 }
                 if($stud_permission_check[7] == 1){
-                   $mform->setDefault('iKonnectmanageSTU', true); 
+                   $mform->setDefault('vcmanageSTU', true); 
                 }
                 if($stud_permission_check[8] == 1){
                    $mform->setDefault('mentormanageSTU', true); 
@@ -518,7 +516,7 @@ class user_editadvanced_form extends moodleform {
                 $mform->disabledIf('taskmanageSTU','');
                 $mform->disabledIf('jobmanageSTU','');
                 $mform->disabledIf('resumeanalyzerSTU','');
-                $mform->disabledIf('iKonnectmanageSTU','');
+                $mform->disabledIf('vcmanageSTU','');
                 $mform->disabledIf('mentormanageSTU','');
                 $mform->disabledIf('accountmanageSTU','');
                 $mform->disabledIf('feedbackSTU','');
@@ -528,11 +526,10 @@ class user_editadvanced_form extends moodleform {
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'badgemanagePROF', 'Badge Management',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'coursemanagePROF', 'Course Management',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'labmanagePROF', 'Labs Management',null, array('group' => 6));
-                $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'hacklabmanagePROF', 'Hackathon Labs Management',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'projectmanagePROF', 'Project Management',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'assessmanagePROF', 'Assessmnet Management',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'taskmanagePROF', 'Task Management',null, array('group' => 6));
-                $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'iKonnectmanagePROF', 'iKonnect Management',null, array('group' => 6));
+                $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'vcmanagePROF', 'Video Conferences',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'reportmanagePROF', 'Report Management',null, array('group' => 6));
                 $availablefromgroup6[] =& $mform->createElement('advcheckbox', 'feedbackPROF', 'Feedback',null, array('group' => 6));
                 $mform->addGroup($availablefromgroup6, 'availablefromgroup6', 'Allocated Access Permissions for Professor - By Account Manager', ' ', false);   
@@ -548,34 +545,30 @@ class user_editadvanced_form extends moodleform {
                     $mform->setDefault('labmanagePROF', true); 
                 }
                 if($prof_permission_check[3] == 1){
-                    $mform->setDefault('hacklabmanagePROF', true); 
-                }
-                if($prof_permission_check[4] == 1){
                     $mform->setDefault('projectmanagePROF', true); 
                 }
-                if($prof_permission_check[5] == 1){
+                if($prof_permission_check[4] == 1){
                     $mform->setDefault('assessmanagePROF', true); 
                 }
-                if($prof_permission_check[6] == 1){
+                if($prof_permission_check[5] == 1){
                     $mform->setDefault('taskmanagePROF', true); 
                 }
-                if($prof_permission_check[7] == 1){
-                    $mform->setDefault('iKonnectmanagePROF', true); 
+                if($prof_permission_check[6] == 1){
+                    $mform->setDefault('vcmanagePROF', true); 
                 }
-                if($prof_permission_check[8] == 1){
+                if($prof_permission_check[7] == 1){
                     $mform->setDefault('reportmanagePROF', true); 
                 }
-                if($prof_permission_check[9] == 1){
+                if($prof_permission_check[8] == 1){
                     $mform->setDefault('feedbackPROF', true); 
                 }
                 $mform->disabledIf('badgemanagePROF','');
                 $mform->disabledIf('coursemanagePROF','');
                 $mform->disabledIf('labmanagePROF','');
-                $mform->disabledIf('hacklabmanagePROF','');
                 $mform->disabledIf('projectmanagePROF','');
                 $mform->disabledIf('assessmanagePROF','');
                 $mform->disabledIf('taskmanagePROF','');
-                $mform->disabledIf('iKonnectmanagePROF','');
+                $mform->disabledIf('vcmanagePROF','');
                 $mform->disabledIf('reportmanagePROF','');
                 $mform->disabledIf('feedbackPROF','');
                 

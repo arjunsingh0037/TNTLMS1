@@ -78,31 +78,31 @@ class user_edit_form extends moodleform {
 
         // Extra settigs.
         if (!empty($CFG->disableuserimages) || $usernotfullysetup) {
-            $mform->removeElement('deletepicture');
-            $mform->removeElement('imagefile');
-            $mform->removeElement('imagealt');
+            //$mform->removeElement('deletepicture');
+            // $mform->removeElement('imagefile');
+            // $mform->removeElement('imagealt');
         }
 
         // If the user isn't fully set up, let them know that they will be able to change
         // their profile picture once their profile is complete.
-        if ($usernotfullysetup) {
-            $userpicturewarning = $mform->createElement('warning', 'userpicturewarning', 'notifymessage', get_string('newpictureusernotsetup'));
-            $enabledusernamefields = useredit_get_enabled_name_fields();
-            if ($mform->elementExists('moodle_additional_names')) {
-                $mform->insertElementBefore($userpicturewarning, 'moodle_additional_names');
-            } else if ($mform->elementExists('moodle_interests')) {
-                $mform->insertElementBefore($userpicturewarning, 'moodle_interests');
-            } else {
-                $mform->insertElementBefore($userpicturewarning, 'moodle_optional');
-            }
+        // if ($usernotfullysetup) {
+        //     $userpicturewarning = $mform->createElement('warning', 'userpicturewarning', 'notifymessage', get_string('newpictureusernotsetup'));
+        //     $enabledusernamefields = useredit_get_enabled_name_fields();
+        //     if ($mform->elementExists('moodle_additional_names')) {
+        //         $mform->insertElementBefore($userpicturewarning, 'moodle_additional_names');
+        //     } else if ($mform->elementExists('moodle_interests')) {
+        //         $mform->insertElementBefore($userpicturewarning, 'moodle_interests');
+        //     } else {
+        //         $mform->insertElementBefore($userpicturewarning, 'moodle_optional');
+        //     }
 
-            // This is expected to exist when the form is submitted.
-            $imagefile = $mform->createElement('hidden', 'imagefile');
-            $mform->insertElementBefore($imagefile, 'userpicturewarning');
-        }
+        //     // This is expected to exist when the form is submitted.
+        //     $imagefile = $mform->createElement('hidden', 'imagefile');
+        //     $mform->insertElementBefore($imagefile, 'userpicturewarning');
+        // }
 
         // Next the customisable profile fields.
-        profile_definition($mform, $userid);
+        //profile_definition($mform, $userid);
 
         $this->add_action_buttons(false, get_string('updatemyprofile'));
 
@@ -200,37 +200,37 @@ class user_edit_form extends moodleform {
     public function validation($usernew, $files) {
         global $CFG, $DB;
 
-        $errors = parent::validation($usernew, $files);
+        // $errors = parent::validation($usernew, $files);
 
-        $usernew = (object)$usernew;
-        $user    = $DB->get_record('user', array('id' => $usernew->id));
+        // $usernew = (object)$usernew;
+        // $user    = $DB->get_record('user', array('id' => $usernew->id));
 
-        // Validate email.
-        if (!isset($usernew->email)) {
-            // Mail not confirmed yet.
-        } else if (!validate_email($usernew->email)) {
-            $errors['email'] = get_string('invalidemail');
-        } else if (($usernew->email !== $user->email)
-                and empty($CFG->allowaccountssameemail)
-                and $DB->record_exists('user', array('email' => $usernew->email, 'mnethostid' => $CFG->mnet_localhost_id))) {
-            $errors['email'] = get_string('emailexists');
-        }
+        // // Validate email.
+        // if (!isset($usernew->email)) {
+        //     // Mail not confirmed yet.
+        // } else if (!validate_email($usernew->email)) {
+        //     $errors['email'] = get_string('invalidemail');
+        // } else if (($usernew->email !== $user->email)
+        //         and empty($CFG->allowaccountssameemail)
+        //         and $DB->record_exists('user', array('email' => $usernew->email, 'mnethostid' => $CFG->mnet_localhost_id))) {
+        //     $errors['email'] = get_string('emailexists');
+        // }
 
-        if (isset($usernew->email) and $usernew->email === $user->email and over_bounce_threshold($user)) {
-            $errors['email'] = get_string('toomanybounces');
-        }
+        // if (isset($usernew->email) and $usernew->email === $user->email and over_bounce_threshold($user)) {
+        //     $errors['email'] = get_string('toomanybounces');
+        // }
 
-        if (isset($usernew->email) and !empty($CFG->verifychangedemail) and !isset($errors['email']) and !has_capability('moodle/user:update', context_system::instance())) {
-            $errorstr = email_is_not_allowed($usernew->email);
-            if ($errorstr !== false) {
-                $errors['email'] = $errorstr;
-            }
-        }
+        // if (isset($usernew->email) and !empty($CFG->verifychangedemail) and !isset($errors['email']) and !has_capability('moodle/user:update', context_system::instance())) {
+        //     $errorstr = email_is_not_allowed($usernew->email);
+        //     if ($errorstr !== false) {
+        //         $errors['email'] = $errorstr;
+        //     }
+        // }
 
-        // Next the customisable profile fields.
-        $errors += profile_validation($usernew, $files);
+        // // Next the customisable profile fields.
+        // $errors += profile_validation($usernew, $files);
 
-        return $errors;
+        // return $errors;
     }
 }
 

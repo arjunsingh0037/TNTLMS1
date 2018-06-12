@@ -20,12 +20,20 @@ $PAGE->set_pagelayout('course');
 $url = new moodle_url($CFG->wwwroot.'/local/course_batches/batch_tocourse.php');
 $PAGE->set_url($url);
 $PAGE->requires->css('/local/course_batches/style/styles.css');
-
+//By Arjun -Permission Access
+$currentuser = $USER->id;
+$user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+if (!$user) {
+    echo $OUTPUT->header();
+    redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+    die; 
+}
 $addnewpromo='Course Assignment To Batch';
 $PAGE->navbar->add($addnewpromo);
 $PAGE->set_title($addnewpromo);
 $PAGE->set_heading('Add Batches');
 echo $OUTPUT->header();
+
 $newobj = new stdClass();
 echo '<div class="panel panel-default">
   <!-- Default panel contents -->
@@ -52,6 +60,7 @@ echo '<div class="panel panel-default">
                     $insert_ac->batchid = $batches;
                     foreach ($_POST['courses'] as $courses) {
                         $insert_ac->courseid = $courses;
+                        $insert_ac->migrated = 0;
                         $tocourse_acad = $DB->insert_record('course_batches',$insert_ac);
                     }
                 }   
@@ -219,11 +228,37 @@ echo $OUTPUT->footer();
                     for( var i = 0; i<len; i++){
                         var batchid = response[i]['batchid'];
                         var batchname = response[i]['batchname'];
+                        var assigned = response[i]['assigned'];
                         $("#enrol_batch").append("<option value='"+batchid+"'>"+batchname+"</option>");
                     }
                     //$("#course_assignlist").append("<hr>");
                 }
             });
-        });  
+        });
+        $("#enrol_batch").change(function(){
+            var batch = $(this).val();
+            var sp = $("#enrol_program").val();
+            var st = $("#enrol_stream").val();
+            $.ajax({
+                url: 'tpcoursesajax.php',
+                dataType: 'html',
+                data: {batch:batch,semp:sp,sems:st},
+                dataType: 'json',
+                success:function(data){
+                    $("#course_assignlist").empty();
+                    $("#course_assignlist").html(data);
+                    /*var len = response.length;
+                    $("#enrol_batch").empty();
+                    $("#enrol_batch").append("<option value='' disabled selected>Select Batch</option>");
+                    for( var i = 0; i<len; i++){
+                        var batchid = response[i]['batchid'];
+                        var batchname = response[i]['batchname'];
+                        var assigned = response[i]['assigned'];
+                        $("#enrol_batch").append("<option value='"+batchid+"'>"+batchname+"</option>");
+                    }*/
+                    //$("#course_assignlist").append("<hr>");
+                }
+            });
+        }); 
     });
 </script>

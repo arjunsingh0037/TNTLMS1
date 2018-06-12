@@ -35,23 +35,26 @@
 require_once('../config.php');
 require_once('lib.php');
 
-$PAGE->set_url('/course/courselistlist.php');
+$PAGE->set_url('/my/account.php');
 require_login();
-$userid = $USER->id;
-$context = context_user::instance($userid, MUST_EXIST);
+$userid = $USER->id;       // Owner of the page.
+if(user_has_role_assignment($userid, 5, SYSCONTEXTID)) {
+    $PAGE->set_context(context_system::instance());
+}else{
+    echo $OUTPUT->header();
+    echo $OUTPUT->notification(get_string('invaliduser', 'error'));
+    echo $OUTPUT->footer();
+    die;
+    
+}
+$currentuser = $USER->id;
+$context = $usercontext = context_user::instance($userid, MUST_EXIST);
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('custom');
-$PAGE->set_pagetype('user-profile');
-//By Arjun -Permission Access
-$currentuser = $USER->id;
-$user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
-if (!$user) {
-    echo $OUTPUT->header();
-    redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
-    die; 
-}
+$PAGE->set_pagetype('user-account');
+
 // Start setting up the page.
-$strpublicprofile = 'Course Lists';
+$strpublicprofile = 'My Account';
 
 $PAGE->blocks->add_region('content');
 $PAGE->set_title("$strpublicprofile");
@@ -70,6 +73,6 @@ if ($node = $PAGE->settingsnav->get('root')) {
 }
 echo $OUTPUT->header();
  //account manager
-userbased_courselist($USER->id,10);
+student_courselist($USER->id,5);
 
 echo $OUTPUT->footer();

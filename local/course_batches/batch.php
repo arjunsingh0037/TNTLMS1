@@ -23,7 +23,14 @@ $PAGE->set_pagelayout('course');
 $url = new moodle_url($CFG->wwwroot.'/local/course_batches/batch.php');
 $PAGE->set_url($url);
 $PAGE->requires->css('/local/course_batches/style/styles.css');
-
+//By Arjun 
+$currentuser = $USER->id;
+$user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+if (!$user) {
+    echo $OUTPUT->header();
+    redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+    die; 
+}
 /*if($generalfirst = $DB->record_exists('batch', array('courseid'=>$course->id))){
 $generalalredy = new stdClass();
 $generalalredy = $DB->get_records('batch', array('courseid' => $course->id));

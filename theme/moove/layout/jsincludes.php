@@ -32,6 +32,7 @@ $course_array = array('abc','xyz','pqr');
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="<?php echo $CFG->wwwroot.'/theme/moove/layout/includes/js/adminlte.min.js'?>"></script>
 
 <script type="text/javascript">
     /*$(document).ready(function() {
@@ -48,6 +49,12 @@ $course_array = array('abc','xyz','pqr');
             }
         });
     });*/
+     $(".dropdown-toggle").click(function() {
+        $(this).parents(".menubar").find(".dropdown-menu").slideToggle();
+        $(this).parents(".menubar").find(".dropdown-menu").css("display","inline-table");
+        $(this).parents(".menubar").find(".dropdown-menu").css("right","0%");
+        $(this).parents(".menubar").find(".dropdown-menu").css("left","auto");
+    });
     function startTime(){
         var today=new Date();
         var h=today.getHours();

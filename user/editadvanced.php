@@ -57,12 +57,21 @@ if (!empty($USER->newadminuser)) {
     $PAGE->set_pagelayout('admin');
 }
 
+//By Arjun -Permission Access
 if ($course->id == SITEID) {
     $coursecontext = context_system::instance();   // SYSTEM context.
 } else {
     $coursecontext = context_course::instance($course->id);   // Course context.
 }
 $systemcontext = context_system::instance();
+
+if(user_has_role_assignment($USER->id, 1, SYSCONTEXTID) || user_has_role_assignment($USER->id, 9, SYSCONTEXTID) || is_siteadmin()){
+    //do nothing -just how the page
+}else{
+    echo $OUTPUT->header();
+    redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+    die; 
+}
 
 if ($id == -1) {
     // Creating new user.

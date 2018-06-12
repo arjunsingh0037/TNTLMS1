@@ -101,6 +101,14 @@ raise_memory_limit(MEMORY_HUGE);
 require_login();
 admin_externalpage_setup('tooluploaduser');
 require_capability('moodle/site:uploadusers', context_system::instance());
+//By Arjun 
+$currentuser = $USER->id;
+$user = $DB->record_exists('trainingpartners', array('userid' => $currentuser));
+if (!$user) {
+    echo $OUTPUT->header();
+    redirect($CFG->wwwroot.'/my','You do not have access to this page.',1,'error');
+    die; 
+}
 
 $struserrenamed             = get_string('userrenamed', 'tool_uploaduser');
 $strusernotrenamedexists    = get_string('usernotrenamedexists', 'error');

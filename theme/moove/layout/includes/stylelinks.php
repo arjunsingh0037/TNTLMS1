@@ -13,3 +13,5 @@
 <link rel="stylesheet" href="<?php echo $CFG->wwwroot.'/theme/moove/layout/includes/css/style-responsive.css'?>"> 
 
 <link rel="stylesheet" href="<?php echo $CFG->wwwroot.'/theme/moove/layout/includes/css/style-responsive.css'?>"> 
+
+<link rel="stylesheet" href="<?php echo $CFG->wwwroot.'/theme/moove/layout/includes/css/AdminLTE.min.css'?>">
